@@ -1,0 +1,19 @@
+#log into AWS server
+ssh -i PFB2019-student.pem mam@rna1.programmingforbiology.org
+
+#zcat will decompress all .fastq.gz files in the directory specified
+#stdin is name holder for a file in .fastq format. 
+#FastQC will look for all files in this format in the directory supplied and run on them.
+#we can output the fastqc results to a new directory, called 'fastqc-results' for file organization
+zcat ~/../share/fastq/*fastq.gz | fastqc --outdir fastqc-results/ --extract --threads 8 stdin -v 
+
+
+
+#then need to open the .html files in the Safari.app
+
+
+
+
+
+
+
