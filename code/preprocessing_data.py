@@ -7,35 +7,43 @@ import subprocess   #run some tools as subprocess from the shell
 def fastqc_process():
     x = 1/0
 
-##### Getting the path of the files
-myCmd = os.popen('pwd').read()
-chr1_path='ls ~/pfb2019_rna1/reference/chr1/'
-print(chr1_path)
-myCmd = os.popen(chr1_path).read()
-print(myCmd)
+
+    #### FASTA FILE Path
+    #    Raw files PATH: ~/../share/fastq  server_pwd:../projects/rna1/share/fastq
+    raw_data_path='~/../share/fastq/'
+    raw_data_path_cmd='ls ' + raw_data_path 
+    print(raw_data_path)
+    myCmd = os.popen(raw_data_path).read()
+    print(myCmd)
 
 ##### Testing: reading files
-#myFasta = 'head '+chr1_path+'GCF_000001735.4_TAIR10.1_cds_chr1.fa'
+#myFasta = 'head ~/pfb2019_rna1/reference/chr1/GCF_000001735.4_TAIR10.1_cds_chr1.fa'
 #myCmd  = os.popen(myFasta).read()
 #print(myCmd)
 
 
 try:
+    
+    #### Create a directory for the fastqc results
+    dir_name = fasta_R2=sys.argv[2]                 # Std name > 'fastqc_res'
+    str_dir_name = 'rm -rf ' + dir_name
+    myCmd2 = os.popen(str_dir_name).read()          # Delete the output directory if exists
 
-    #### FASTA FILE PROCESS
-    #    Raw files in: ~/../share/fastq  server_pwd:../projects/rna1/share/fastq
-    raw_data_path='cd ~/../share/fastq'
-    print(raw_data_path)
-    myCmd = os.popen(raw_data_path).read()
-    myCmd = os.popen('ls -lhg').read()
-    print(myCmd)
+    fasta_out='mkdir '+ dir_name                    # Create the fastqc output directory
+    print(fasta_out)
+    myCmd3 = os.popen(fasta_out).read()
+    print(myCmd3)
 
-    #fasta_R1=sys.argv[1]
-    #fasta_R2=sys.argv[2]
-    #fastqc_cmd = 'fastqc -help xxxxxx '
-    #myCmd  = os.popen(fastqc_cmd).read()
-    #print(myCmd)
+    for _file in sys.argv[1:]:
 
+    with open(_file,"r") as fin:
+        print(_file)
+        #### Fastqc cmd line in unix 
+        #name=_file                                  # 'SRR9659514_pass_1_edit.fastq.gz'
+        #fasta_cmd='zcat ' + raw_data_path + name +'| fastqc --outdir '+ dir_name +'/ --extract --threads 8 stdin'
+        #print(fasta_cmd)
+        #myCmd3 = os.popen(fasta_cmd).read()
+        #print(myCmd3)
 
 except:
     
