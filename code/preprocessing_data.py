@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
+<<<<<<< HEAD
 import sys
 import os    #to interact with the unix shell
 import subprocess   #run some tools as subprocess from the shell
 import pathlib
+=======
+
+import sys
+import os    #to interact with the unix shell
+import subprocess   #run some tools as subprocess from the shell
+>>>>>>> upstream/master
 
 def fastqc_process():
     x = 1/0
 
+<<<<<<< HEAD
 ####
 
 
@@ -22,10 +30,22 @@ def fastqc_process():
 
 ##### Testing: reading files
 #myFasta = 'head ~/pfb2019_rna1/reference/chr1/GCF_000001735.4_TAIR10.1_cds_chr1.fa'
+=======
+##### Getting the path of the files
+myCmd = os.popen('pwd').read()
+chr1_path='ls ~/pfb2019_rna1/reference/chr1/'
+print(chr1_path)
+myCmd = os.popen(chr1_path).read()
+print(myCmd)
+
+##### Testing: reading files
+#myFasta = 'head '+chr1_path+'GCF_000001735.4_TAIR10.1_cds_chr1.fa'
+>>>>>>> upstream/master
 #myCmd  = os.popen(myFasta).read()
 #print(myCmd)
 
 
+<<<<<<< HEAD
 def fastaf_quality(dir_f):
     try:
         #### CREATE DIRECTORY for the fastqc results
@@ -97,3 +117,25 @@ print(bow1)
 
 
 
+=======
+try:
+
+    #### FASTA FILE PROCESS
+    #    Raw files in: ~/../share/fastq  server_pwd:../projects/rna1/share/fastq
+    raw_data_path='cd ~/../share/fastq'
+    print(raw_data_path)
+    myCmd = os.popen(raw_data_path).read()
+    myCmd = os.popen('ls -lhg').read()
+    print(myCmd)
+
+    #fasta_R1=sys.argv[1]
+    #fasta_R2=sys.argv[2]
+    #fastqc_cmd = 'fastqc -help xxxxxx '
+    #myCmd  = os.popen(fastqc_cmd).read()
+    #print(myCmd)
+
+
+except:
+    
+    print("Please provide the fasta file and try again")
+>>>>>>> upstream/master
