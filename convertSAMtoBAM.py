@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-###This script takes one user input (the SAM file of interest) and converts it into a BAM file.###
+###This script takes one user input (the SAM file of interest) and converts it into a SORTED BAM file.###
 
 import subprocess
 import pathlib
