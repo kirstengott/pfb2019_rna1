@@ -14,4 +14,12 @@ print("sam file to convert:", samfile, "\n"+"bam file output:", bamfile)
 
 samtobam = str("samtools view -S -b -@ 6 "+samfile+" > "+bamfile)
 Cmdsambam = os.popen(samtobam).read()
-print('convert sam to bam:' + Cmdsambam)
+print('convert sam to bam: ' + Cmdsambam)
+
+bamsorted = (bamfile+".sorted")
+sortbam = str('samtools sort -@ 6 '+bamfile+'-o '+bamsorted)
+Cmdsortbam = os.popen(sortbam).read()
+
+print('bam file to be sorted: '+Cmdsortbam)
+print('sorted bam file saved as: '+bamsorted)
+
