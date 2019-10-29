@@ -1,27 +1,19 @@
 #!/usr/bin/env python3
-<<<<<<< HEAD
 import sys
 import os    #to interact with the unix shell
 import subprocess   #run some tools as subprocess from the shell
 import pathlib
-=======
 
-import sys
-import os    #to interact with the unix shell
-import subprocess   #run some tools as subprocess from the shell
->>>>>>> upstream/master
-
-def fastqc_process():
-    x = 1/0
-
-<<<<<<< HEAD
-####
+########################################
 
 
-# USAGE: python3 preprocessing_data.py <../fastq-files/> <folder_to_save_the_fasqc_results>
+# USAGE FOR FASTA: python3 preprocessing_data.py <../fastq-files/> <folder_to_save_the_fasqc_results>
+
+# USAGE FOR BOWTIE2: python3 preprocessing_data.py <../fastq-files/> 
 
 
-#### FASTA FILES
+#### FASTA FILES #######################
+
 #    Raw files PATH: 
 #raw_data_path='../fastq-files'                     # This is the folder where are the fasta files
 #raw_data_path_cmd='ls ' + raw_data_path 
@@ -30,22 +22,11 @@ def fastqc_process():
 
 ##### Testing: reading files
 #myFasta = 'head ~/pfb2019_rna1/reference/chr1/GCF_000001735.4_TAIR10.1_cds_chr1.fa'
-=======
-##### Getting the path of the files
-myCmd = os.popen('pwd').read()
-chr1_path='ls ~/pfb2019_rna1/reference/chr1/'
-print(chr1_path)
-myCmd = os.popen(chr1_path).read()
-print(myCmd)
-
-##### Testing: reading files
-#myFasta = 'head '+chr1_path+'GCF_000001735.4_TAIR10.1_cds_chr1.fa'
->>>>>>> upstream/master
 #myCmd  = os.popen(myFasta).read()
 #print(myCmd)
 
 
-<<<<<<< HEAD
+# Function to trigger fastqc reports (read the full folder)
 def fastaf_quality(dir_f):
     try:
         #### CREATE DIRECTORY for the fastqc results
@@ -68,17 +49,18 @@ def fastaf_quality(dir_f):
             #print(f_file)
             fastqc_cmd = "fastqc -f fastq " + f_file + " -- outdir " + dir_name       # It isn't saving in the --output dir.... just look in the fasta files folder  (...pending to review)
             print(fastqc_cmd)
-            # Use this line for zip files    
-            # fastqc_cmd='zcat ' + name + ' | fastqc --outdir '+ dir_name +'/ --extract --threads 8 stdin'
+            ######## Use this line for zip files    
+            #       fastqc_cmd='zcat ' + name + ' | fastqc --outdir '+ dir_name +'/ --extract --threads 8 stdin'
             myCmd3 = os.popen(fastqc_cmd).read()
             #print(myCmd3)                          # output to the screen the process            
-
+            
     except:
         print("Please provide the fasta file and try again")
 
-    return(fasta_count)
+    return(True)
 
 
+# Function to triger alignments
 def bowtie2_f(R1,R2,b_name):
     try:
         #cmd structure of bowtie2: "bowtie2 -p 8 --mm -t --end-to-end -x pfb2019_rna1/reference/full/bw2-ara-indx -1 ../share/fastq/SRR9659514_pass_1_edit.fastq.gz -2 ../share/fastq/SRR9659514_pass_2_edit.fastq.gz --un-conc-gz bw2-full-results-DONT-PUSH/bw2-R1-ara-un-conc.fq.gz --al-conc-gz bw2-full-results-DONT-PUSH/bw2-R1-ara-al-conc.fq.gz -S bw2-full-results-DONT-PUSH/bw2-R1-ara-alignments.sam 2> bw2-full-results-DONT-PUSH/bw2-R1-ara-output.stdout"
@@ -96,11 +78,53 @@ def bowtie2_f(R1,R2,b_name):
     
     return(x)
 
-#Get the fasta folder name
-dir_fasta =sys.argv[1]
+
+
+# Function to parse the output of sam files
+def bowtie2_read_std_out(dir_s):
+    # Get the full list of sam.output file
+    #str_dir_f = dir_s
+    str_dir_f = '../bw2_results/'           # '~/../share/bw2-short-output/stdout-files/'
+    print('Sam input path: ' + str_dir_f)
+    arr_bwt2_f = os.listdir(str_dir_f)          # Real folder:'../fastq-files'; Test: 'fasta_test/'
+    print(arr_bwt2_f)
+
+    # Parse the files into the directory to trigger the fastqc
+    samlist = [] 
+
+    for bwt2_f in (arr_bwt2_f):
+        f_file = bwt2_f              
+        str_sam_file = str_dir_f + f_file 
+        #print('Sam (ouput) file name: ' + str_sam_file)
+   
+        with open(str_sam_file,"r") as fn:            
+            count_ln=0
+            print('\n\nSam (ouput) file name: ' + f_file)
+            samlist.append(f_file)
+            for line in fn:
+                count_ln+=1
+                if (count_ln>6) & (count_ln<11):
+                    ln=line.strip()
+                    #ln_end = ln.find(')')
+                    #ln_str = ln[1:ln_end+1]              
+                    #ln_str2 = ln_str.spli(' ')
+                    print(ln)
+                    samlist.append(ln)
+                        
+    #print('fname:' , d.f_name , ' ' , 'Treads:' , d.reads, ' ' , 'Concor0:' , d.concor, 'Concor1:', d.concor1 )         
+    #print(samlist)
+    return(samlist)      # return the value to the code that called this function
+           
+
+#Get the path of the folder to parse
+dir_f =sys.argv[1]
+
+
+##################  HERE ARE CALL THE FUNCTIONS ################################
+
 
 # FUNCTION TO RUN THE FASTA QUALITY PROCESS
-#if fastaf_quality(dir_fasta): print("Fasta file process done")
+#if fastaf_quality(dir_f): print("Fasta file process done")
 
 # ASSUMING THE INDEX PROCESS WAS DONE PREVIOUSLY 
 
@@ -111,31 +135,15 @@ idx_base = 'Base'
 bow1 = bowtie2_f(fastaR1,fastaR2,idx_base) 
 print(bow1)
 
+# FUNCTION TO GET THE BOWTIE2 RESULTS
+samlist = bowtie2_read_std_out(dir_f)
+# Send the sam_list resume table to the screen
+#for sam in samlist:
+#  print(sam)
 
 
 
 
 
 
-=======
-try:
 
-    #### FASTA FILE PROCESS
-    #    Raw files in: ~/../share/fastq  server_pwd:../projects/rna1/share/fastq
-    raw_data_path='cd ~/../share/fastq'
-    print(raw_data_path)
-    myCmd = os.popen(raw_data_path).read()
-    myCmd = os.popen('ls -lhg').read()
-    print(myCmd)
-
-    #fasta_R1=sys.argv[1]
-    #fasta_R2=sys.argv[2]
-    #fastqc_cmd = 'fastqc -help xxxxxx '
-    #myCmd  = os.popen(fastqc_cmd).read()
-    #print(myCmd)
-
-
-except:
-    
-    print("Please provide the fasta file and try again")
->>>>>>> upstream/master
